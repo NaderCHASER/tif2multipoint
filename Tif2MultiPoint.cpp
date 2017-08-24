@@ -23,14 +23,17 @@ std::vector<Point *> points;
 
 int main(int argc, char *argv[]) {
 
-	if (argc < 4) {
-		printf("%s inputCSV [geojson or czml] outputFile inputTif1...\n", argv[0]);
+	if (argc < 6) {
+		printf("%s inputCSV [geojson or czml] units unitsSI unitsUS outputFile inputTif1...\n", argv[0]);
 		return 1;
 	}
 	
 	char *argInputCSV = argv[1];
 	char *argFormat = argv[2];
-	char *argOutput = argv[3];
+	char *argUnits = argv[3];
+	char *argUnitsSI = argv[4];
+	char *argUnitsUS = argv[5];
+	char *argOutput = argv[6];
 	int expectedArgs = 3;
 	int numInputFiles = argc - expectedArgs;
 	int argInputFileIndex = expectedArgs;
@@ -83,12 +86,12 @@ int main(int argc, char *argv[]) {
 	
 	for (size_t i = 0; i < points.size(); i++) {
 		float data = dataGrids[firstIndex]->noData;
-		for (int i = 0; i < numInputFiles; i++) {
-			if (!dataGrids[i]) {
+		for (int j = 0; j < numInputFiles; j++) {
+			if (!dataGrids[j]) {
 				continue;
 			}
-			data = GetDataValue(dataGrids[i], points[i]->lat, points[i]->lon);
-			if (data != dataGrids[i]->noData) {
+			data = GetDataValue(dataGrids[j], points[i]->lat, points[i]->lon);
+			if (data != dataGrids[j]->noData) {
 				break; // We found some data!!
 			}
 		}
@@ -103,13 +106,18 @@ int main(int argc, char *argv[]) {
 	FILE *output = fopen(argOutput, "wb");
 	if (!strcasecmp(argFormat, "czml")) {
 		//CZML output
+		fprintf(output, "%s\n", "[{\"id\":\"document\",\"name\":\"Labels\",\"version\":\"1.0\"}");
 		for (size_t i = 0; i < points.size(); i++) {
+			fprintf(output, ",{\"id\":\"%i\",\"name\":\"%s\",\"description\":\"%s\",\"label\":{\"text\":\"%s\",\"font\":\"14pt Lucida Console\",\"style\":\"FILL_AND_OUTLINE\",\"outlineWidth\":4,\"outlineColor\":{\"rgba\":[0,0,0,255]}},\"heightReference\":\"CLAMP_TO_GROUND\",\"position\":{\"cartographicDegrees\":[\"%f\",\"%f\",0]}}\n", i, points[i]->name, points[i]->data, points[i]->data, points[i]->lat, points[i]->lon);
 		}
+		fprintf(output, "%s\n", "]");
 	} else {
 		// geojson output
-
+		fprintf(output, "%s\n", "[");
 		for (size_t i = 0; i < points.size(); i++) {
+			fprintf(output, "%s{\"lat\": %f, \"lon\": %f, \"text\": \"%s\", \"units\": \"%s\", \"unitssi\": \"%s\",\"unitsus\": \"%s\"}\n", (i != 0) ? "," : "", points[i]->lat, points[i]->lon, points[i]->data, argUnits, argUnitsSI, argUnitsUS);
                 }
+		fprintf(output, "%s\n", "]");
 	}
 	fclose(output);
 	return 0;
