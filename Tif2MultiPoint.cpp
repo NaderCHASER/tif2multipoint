@@ -34,7 +34,7 @@ int main(int argc, char *argv[]) {
 	char *argUnitsSI = argv[4];
 	char *argUnitsUS = argv[5];
 	char *argOutput = argv[6];
-	int expectedArgs = 3;
+	int expectedArgs = 7;
 	int numInputFiles = argc - expectedArgs;
 	int argInputFileIndex = expectedArgs;
 
