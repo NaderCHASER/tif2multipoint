@@ -27,7 +27,7 @@ int main(int argc, char *argv[]) {
 		printf("%s inputCSV [geojson or czml] units unitsSI unitsUS outputFile inputTif1...\n", argv[0]);
 		return 1;
 	}
-	
+
 	char *argInputCSV = argv[1];
 	char *argFormat = argv[2];
 	char *argUnits = argv[3];
@@ -83,7 +83,7 @@ int main(int argc, char *argv[]) {
 		printf(NO_DATA);
                 return 1;
 	}
-	
+
 	for (size_t i = 0; i < points.size(); i++) {
 		float data = dataGrids[firstIndex]->noData;
 		for (int j = 0; j < numInputFiles; j++) {
@@ -108,7 +108,7 @@ int main(int argc, char *argv[]) {
 		//CZML output
 		fprintf(output, "%s\n", "[{\"id\":\"document\",\"name\":\"Labels\",\"version\":\"1.0\"}");
 		for (size_t i = 0; i < points.size(); i++) {
-			fprintf(output, ",{\"id\":\"%i\",\"name\":\"%s\",\"description\":\"%s\",\"label\":{\"text\":\"%s\",\"font\":\"14pt Lucida Console\",\"style\":\"FILL_AND_OUTLINE\",\"outlineWidth\":4,\"outlineColor\":{\"rgba\":[0,0,0,255]}},\"heightReference\":\"CLAMP_TO_GROUND\",\"position\":{\"cartographicDegrees\":[\"%f\",\"%f\",0]}}\n", i, points[i]->name, points[i]->data, points[i]->data, points[i]->lat, points[i]->lon);
+			fprintf(output, ",{\"id\":\"%i\",\"name\":\"%s\",\"description\":\"%s\",\"label\":{\"text\":\"%s\",\"font\":\"14pt Lucida Console\",\"style\":\"FILL_AND_OUTLINE\",\"outlineWidth\":4,\"outlineColor\":{\"rgba\":[0,0,0,255]}},\"heightReference\":\"CLAMP_TO_GROUND\",\"position\":{\"cartographicDegrees\":[\"%f\",\"%f\",0]}}\n", i, points[i]->name, points[i]->data, points[i]->data, points[i]->lon, points[i]->lat);
 		}
 		fprintf(output, "%s\n", "]");
 	} else {
@@ -130,7 +130,7 @@ bool ReadPoints(char *file) {
 		return false;
 	}
    	while (!feof(pFile)) {
-		Point *pt = new Point; 
+		Point *pt = new Point;
 		if (fscanf(pFile, "%[^;];%f;%f ", &(pt->name[0]), &(pt->lat), &(pt->lon)) == 3) {
 			points.push_back(pt);
 		}
