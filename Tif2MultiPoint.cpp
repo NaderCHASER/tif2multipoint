@@ -108,6 +108,9 @@ int main(int argc, char *argv[]) {
 		//CZML output
 		fprintf(output, "%s\n", "[{\"id\":\"document\",\"name\":\"Labels\",\"version\":\"1.0\"}");
 		for (size_t i = 0; i < points.size(); i++) {
+			if (points[i]->data == NO_DATA) {
+				continue;
+			}
 			fprintf(output, ",{\"id\":\"%i\",\"name\":\"%s\",\"description\":\"%s\",\"label\":{\"text\":\"%s\",\"font\":\"14pt Lucida Console\",\"style\":\"FILL_AND_OUTLINE\",\"outlineWidth\":4,\"outlineColor\":{\"rgba\":[0,0,0,255]}},\"heightReference\":\"CLAMP_TO_GROUND\",\"position\":{\"cartographicDegrees\":[\"%f\",\"%f\",0]}}\n", i, points[i]->name, points[i]->data, points[i]->data, points[i]->lon, points[i]->lat);
 		}
 		fprintf(output, "%s\n", "]");
